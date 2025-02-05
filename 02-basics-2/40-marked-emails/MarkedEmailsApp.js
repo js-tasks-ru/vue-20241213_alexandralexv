@@ -32,19 +32,37 @@ export const emails = [
 export default defineComponent({
   name: 'MarkedEmailsApp',
 
-  setup() {},
+  setup() {
+    const emailList = ref(emails)
+    const filter = ref('')
+
+    const isMarked = computed(() => {
+      return email => filter.value && email.includes(filter.value)
+    })
+
+    return {
+      emailList,
+      filter,
+      isMarked,
+    }
+  },
 
   template: `
     <div>
       <div class="form-group">
-        <input type="search" aria-label="Search" />
+        <input type="search" aria-label="Search" v-model.trim="filter"/>
       </div>
       <ul aria-label="Emails">
-        <li>
-          Eliseo@gardner.biz
-        </li>
-        <li class="marked">
-          Jayne_Kuhic@sydney.com
+        <li v-for="(email, index) in emailList" :key="index">
+          <!-- Идея №3 -->
+           <div :class="{marked: isMarked(email)}">{{ email }}</div>
+
+          <!-- Идея №2 -->
+          <!-- <div :class="{marked: filter && email.includes(filter)}">{{ email }}</div> -->
+
+          <!-- Идея №1 -->
+          <!-- <div v-if="email.includes(filter) && filter" class="marked">{{ email }}</div>
+          <div v-else>{{ email }}</div> -->
         </li>
       </ul>
     </div>
