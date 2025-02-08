@@ -36,14 +36,13 @@ export default defineComponent({
     const emailList = ref(emails)
     const filter = ref('')
 
-    const isMarked = computed(() => {
-      return email => filter.value && email.includes(filter.value)
+    const filteredEmails = computed(() => {
+      return emailList.value.map(email => ({ email, marked: filter.value && email.includes(filter.value) }))
     })
 
     return {
-      emailList,
+      filteredEmails,
       filter,
-      isMarked,
     }
   },
 
@@ -52,18 +51,8 @@ export default defineComponent({
       <div class="form-group">
         <input type="search" aria-label="Search" v-model.trim="filter"/>
       </div>
-      <ul aria-label="Emails">
-        <li v-for="(email, index) in emailList" :key="index">
-          <!-- Идея №3 -->
-           <div :class="{marked: isMarked(email)}">{{ email }}</div>
-
-          <!-- Идея №2 -->
-          <!-- <div :class="{marked: filter && email.includes(filter)}">{{ email }}</div> -->
-
-          <!-- Идея №1 -->
-          <!-- <div v-if="email.includes(filter) && filter" class="marked">{{ email }}</div>
-          <div v-else>{{ email }}</div> -->
-        </li>
+      <ul aria-label="Emails" v-for="item in filteredEmails">
+        <li :class="{marked: item.marked}">{{ item.email }}</li>
       </ul>
     </div>
   `,
